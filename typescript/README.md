@@ -18,7 +18,7 @@ It also shows the resulting js and d.ts files.
 
 You can specify a type after a variable name. If omitted, the type will be inferred from context. Hover over the variable name to see the type.
 
-```
+```ts
 let helloWorld:string = "Hello World";
 let foo = "bar";
 foo = 42; // An error will be shown on this line, because foo is type str
@@ -35,7 +35,7 @@ https://www.typescriptlang.org/play?q=58#example/union-and-intersection-types
 
 You can easily specify multiple types using a union, eg.
 
-```
+```ts
 const str = "Hello World";
 const num = 42;
 const obj = {};
@@ -53,7 +53,7 @@ printValue(obj); // Error since it's not a string or a number
 
 You can specify when an interface has an optional property, eg.
 
-```
+```ts
 interface Artist {
   id: number;
   name?: string;
@@ -71,7 +71,7 @@ printArtist({ id: 42, name: null }); // If you try to pass null for name, it is 
 Enums can be specified without values, or you can specify a value for each of the keys: https://www.typescriptlang.org/play?q=110#example/enums
 It also will point out if you're not handling some cases in a switch/case, eg:
 
-```
+```ts
 enum CompassDirection {
   North,
   East,
@@ -94,7 +94,7 @@ const displayText = (direction:CompassDirection):string => {
 
 Use Type Predicates to check if a type conforms to a specific subtype.
 
-```
+```ts
 interface Shape {
   pointCount: number;
 }
