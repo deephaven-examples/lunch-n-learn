@@ -50,4 +50,4 @@ triggerReactEvent($0, 'input', 'test');
 
 
 ### VSCode debugger
-- [[launch.json|CRA debug config]]
+- [CRA debug config](./launch.json)
