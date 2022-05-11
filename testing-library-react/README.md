@@ -230,6 +230,33 @@ it("mounts and unmounts properly", () => {
 });
 ```
 
+### Testing with React.cloneElement
+
+What if we expect a child to receive props via `React.cloneElement`? We can have that child render with those props to check if it is receiving the correct props:
+
+```javascript
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import ParentClone from "./ParentClone";
+
+it("passes through onClick prop", async () => {
+  const name = "Child Button";
+  const ChildElement: React.FunctionComponent<{
+    onClick?: React.MouseEventHandler<HTMLButtonElement>,
+  }> = ({ onClick }) => <button onClick={onClick}>{name}</button>;
+  const onClick = jest.fn();
+  render(
+    <ParentClone onClick={onClick}>
+      <ChildElement />
+    </ParentClone>
+  );
+
+  await userEvent.click(screen.getByRole("button", { name }));
+  expect(onClick).toHaveBeenCalled();
+});
+```
+
 ### Custom Matchers
 
 There are [custom matchers](https://github.com/testing-library/jest-dom#custom-matchers) included in `@testing-library/jest-dom` (which is included in Create React App apps). These can be used to conveniently check the classes or attributes of an element. An example of checking that an element has a specific class set by using [toHaveClass](https://github.com/testing-library/jest-dom#tohaveclass) (see [Active.test.tsx](examples/src/Active.test.tsx)):
