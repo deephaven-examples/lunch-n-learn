@@ -30,6 +30,20 @@ graph TD
 
 Playwright tests can be run by executing `npx playwright test`. By default they are executed in Headless mode, meaning the browser is not visible or open.
 
+## Viewing Report
+
+By default, after running the tests, if there is a failure you will be able to view the report:
+
+![Report console](./assets/report-console.png)
+
+Opening the report will give you details on which tests are failing:
+
+![Report view](./assets/report-view.png)
+
+You can then open the details of each report, showing which step within your test failed, along with a video to help with debugging:
+
+![Report details](./assets/report-details.png)
+
 ## Writing Tests
 
 We use React Testing Library to write our unit tests. Playwright uses slightly different syntax, but there is a [Cheat Sheet](https://playwright.dev/docs/testing-library#cheat-sheet) that details how to write equivalent tests in Playwright which can be handy.
@@ -37,6 +51,10 @@ We use React Testing Library to write our unit tests. Playwright uses slightly d
 ### Codegen
 
 You can use a generator to write the tests for you. Run `npx playwright codegen http://localhost:4000`, and then perform the actions you would like to do in your tests, and code will be generated for you. After generating tests, you may want to clean up some of the selectors, and/or write some `expect` checks to verify what is happening on the screen.
+
+![Codegen](./assets/codegen.mp4)
+
+Often the selectors generated from codegen are somewhat convoluted, so you will want to review them to see if they can be handled differently.
 
 ### Screenshots
 
@@ -48,7 +66,7 @@ Some elements (such as our Grid or plots) are canvas based elements, and we cann
 
 By default, Playwright will generate the screenshots on first run. If you need to force screenshots to update, you can run `npx playwright test --update-snapshots`.
 
-TODO: For CI, we also need to generate screenshots matching the OS that will be used in CI.
+TODO: For CI, we also need to generate screenshots matching the OS that will be used in CI. Because CI may run in a different OS/Environment, we can [create a docker container to generate the snapshots](https://playwright.dev/docs/test-snapshots).
 
 ## Debugging Tests
 
