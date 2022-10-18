@@ -66,7 +66,7 @@ Some elements (such as our Grid or plots) are canvas based elements, and we cann
 
 By default, Playwright will generate the screenshots on first run. If you need to force screenshots to update, you can run `npx playwright test --update-snapshots`.
 
-TODO: For CI, we also need to generate screenshots matching the OS that will be used in CI. Because CI may run in a different OS/Environment, we can [create a docker container to generate the snapshots](https://playwright.dev/docs/test-snapshots).
+For CI, we also need to generate screenshots matching the OS that will be used in CI. Because CI may run in a different OS/Environment, we can [create a docker container to generate the snapshots](https://playwright.dev/docs/test-snapshots).
 
 ## Debugging Tests
 
