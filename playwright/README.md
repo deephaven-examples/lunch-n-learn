@@ -6,7 +6,7 @@
 
 ## Overview
 
-Playwright will connect with the web dev server so we can connect test out the latest Web UI code with an existing deephaven-core server.
+Playwright will connect with the web dev server so we can test out the latest Web UI code with an existing deephaven-core server.
 
 By default, playwright uses multiple workers to run tests in parallel. These workers will run tests in multiple browsers configured in `playwright.config.ts` (chromium, firefox, webkit by default), as well as running tests from different files simultaneously. This helps the tests run faster, but you should be aware of the multiple workers so that you write tests that do not conflict when running concurrently with other tests that could be potentially running.
 
