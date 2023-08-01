@@ -11,7 +11,7 @@ GitHub Copilot is an [AI pair programmer](https://docs.github.com/en/copilot/qui
 - Filling in boiler plate code
 - Adding doc strings to functions
 - Ask questions about your code
-- Find bugs in the code.
+- Find bugs in the code
 
 ### What is Copilot Not Good For?
 
@@ -55,8 +55,6 @@ You can use `Ctrl+Enter` to view all suggestions for a given snippet. This is ha
 
 When GitHub Copilot is not providing the suggestions you are looking for, you can add some more text or remove some text to nudge it in the right direction.
 
-![Nudging suggestions](./assets/nudging-suggestions.gif)
-
 ### GitHub Copilot Chat (Beta)
 
 The GitHub Copilot Chat extension is currently in beta, and is only available for Visual Studio Code. You can use it to ask Copilot questions about specific areas of code, generate unit tests for you, or even find bugs in your code. You can access the Chat from the Extensions bar on the left (chat icon) or by pressing `Ctrl+P`, and typing `>` followed by your question and selecting the `Ask GitHub Copilot` option.
@@ -83,7 +81,7 @@ You can ask Copilot to find bugs in your code. By using the extension in the sid
 
 ## General Tips
 
-- **Simple, Specific, and Short:** Copilot is works best when you're asking for something simple, specific, and short. If you're having trouble with the suggestions, try being more specific, or simplifying the instructions into something shorter.
+- **Simple, Specific, and Short:** Copilot works best when you're asking for something simple, specific, and short. If you're having trouble with the suggestions, try being more specific, or simplifying the instructions into something shorter.
 - **Patterns and Examples:** Copilot, being a language model, is great at recognizing patterns. If you're not getting what you want, try providing an example of what you want, or a pattern that you want it to follow.
 
 ## Limitations
