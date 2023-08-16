@@ -2,7 +2,7 @@
 
 ## What is Copilot?
 
-GitHub Copilot is an [AI pair programmer](https://docs.github.com/en/copilot/quickstart). At it's core, it's essentially supercharged autocomplete. It uses machine learning to provide suggestions for code as you type. It is trained on billions of lines of public code, and can provide suggestions for a variety of languages and frameworks.
+GitHub Copilot is an [AI pair programmer](https://docs.github.com/en/copilot/quickstart), powered by GPT-4. At it's core, it's essentially supercharged autocomplete. It uses machine learning to provide suggestions for code as you type. It is trained on billions of lines of public code, and can provide suggestions for a variety of languages and frameworks. New features are being added all the time, and it is constantly improving. Copilot Chat is current in beta, and only available in VS Code right now. Copilot Voice is currently in alpha, and not available to the public (or Deephaven) yet.
 
 ### What is Copilot Good For?
 
@@ -57,7 +57,7 @@ When GitHub Copilot is not providing the suggestions you are looking for, you ca
 
 ### GitHub Copilot Chat (Beta)
 
-The GitHub Copilot Chat extension is currently in beta, and is only available for Visual Studio Code. You can use it to ask Copilot questions about specific areas of code, generate unit tests for you, or even find bugs in your code. You can access the Chat from the Extensions bar on the left (chat icon) or by pressing `Ctrl+P`, and typing `>` followed by your question and selecting the `Ask GitHub Copilot` option.
+The GitHub Copilot Chat extension is currently in beta, and is only available for Visual Studio Code. You can use it to ask Copilot questions about specific areas of code, generate unit tests for you, or even find bugs in your code. You can access the Chat from the Extensions bar on the left (chat icon) or by pressing `Ctrl+P`, and typing `>` followed by your question and selecting the `Ask GitHub Copilot` option. You can also access options via the Copilot context menu item (right click).
 
 For more details on the capabilities and limitations of GitHub Copilot Chat, see [the Copilot documentation](https://docs.github.com/en/early-access/copilot/github-copilot-chat-transparency-note).
 
@@ -72,6 +72,14 @@ You can highlight some code or a file, and ask Copilot what that code does. It w
 You can ask Copilot to generate unit tests for you. You can ask it to generate unit tests for a specific function, or for a specific file. It will generate unit tests for you, and insert them into your code.
 
 ![Generating unit tests](./assets/generating-unit-tests.gif)
+
+This is also accessible from the context menu, where it will show the diff or test file that will be added, and allow you to Accept or Discard the changes.
+
+#### Generating Docs
+
+From the context menu (right click), you can access much of the Copilot Chat functionality. It will then suggest changes inline so you can see the diff, and accept the solutions.
+
+![Generating docs](./assets/generating-docs.gif)
 
 #### Finding Bugs
 
@@ -90,6 +98,7 @@ You can ask Copilot to find bugs in your code. By using the extension in the sid
 - Copilot is not a replacement for writing unit tests. It can generate unit tests for you, but it is not a replacement for writing your own unit tests. It is important to review the unit tests that Copilot generates, and make sure they are doing what you expect them to do.
 - Copilot can make mistakes. It is possible for it to generate code that may look correct, but is actually incorrect. It is important to review the code that Copilot generates, and make sure it is doing what you expect it to do.
 - Copilot Chat can only answer questions about code that it has seen before. If you ask it a question about code that it has not seen before, it will not be able to answer your question. It also will not be able to identify architectural issues.
+- Copilot is not a mindreader. Sometimes suggestions with the ghost text will be the wrong thing and can be distracting. You can disable this by setting `editor.suggest.showGhostText` to `false` in your settings.
 
 ## Resources
 
@@ -99,3 +108,6 @@ You can ask Copilot to find bugs in your code. By using the extension in the sid
 - [GitHub Copilot Tips and Tricks](https://youtu.be/1qs6QKk0DVc)
 - [Pragmatic techniques to get the most out of GitHub Copilot](https://youtu.be/CwAzIpc4AnA)
 - [GitHub Copilot Just Changed the Game](https://www.youtube.com/watch?v=IavOJI5OV7g)
+- [The Truth about Github Copilot](https://www.youtube.com/watch?v=4duqI8WyfqE)
+- [Game over.... GitHub Copilot X announced](https://www.youtube.com/watch?v=q1HZj40ZQrM)
+- [GitHub Copilot X: The AI-powered developer experience](https://github.blog/2023-03-22-github-copilot-x-the-ai-powered-developer-experience/)
