@@ -2,7 +2,7 @@
 
 ## What is Copilot?
 
-GitHub Copilot is an [AI pair programmer](https://docs.github.com/en/copilot/quickstart), powered by GPT-4. At it's core, it's essentially supercharged autocomplete. It uses machine learning to provide suggestions for code as you type. It is trained on billions of lines of public code, and can provide suggestions for a variety of languages and frameworks. New features are being added all the time, and it is constantly improving. Copilot Chat is current in beta, and only available in VS Code right now. Copilot Voice is currently in alpha, and not available to the public (or Deephaven) yet.
+GitHub Copilot is an [AI pair programmer](https://docs.github.com/en/copilot/quickstart), powered by GPT-4. At it's core, it's essentially supercharged autocomplete. It uses machine learning to provide suggestions for code as you type. It is trained on billions of lines of public code, and can provide suggestions for a variety of languages and frameworks. New features are being added all the time, and it is constantly improving. Copilot Chat is current in beta, and only available in VS Code right now. Copilot Voice is currently in alpha, and not available to the public (or Deephaven) yet. Other features on the [Roadmap for Copilot X](https://github.com/features/preview/copilot-x) include PR description generation, Command Line Interface (CLI) support, and more.
 
 ### What is Copilot Good For?
 
