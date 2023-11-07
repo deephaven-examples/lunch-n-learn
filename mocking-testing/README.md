@@ -19,19 +19,35 @@
 
 ### Examples
 
-- [02-moduleMocks.test.ts](examples/src/02-moduleMocks.test.ts)
-- Single export on a module:
-  [IrisGridTheme.test.ts](https://github.com/deephaven/web-client-ui/blob/61d1a537ac9df31e3fe3dad95107b065a12ebd3b/packages/iris-grid/src/IrisGridTheme.test.ts#L7-L10)
+- [02-moduleMocksManual.test.ts](examples/src/02-moduleMocksManual.test.ts)
+- [02-moduleMocksPartials.test.ts](examples/src/02-moduleMocksPartials.test.ts)
+- [IrisGridTheme.test.ts](https://github.com/deephaven/web-client-ui/blob/61d1a537ac9df31e3fe3dad95107b065a12ebd3b/packages/iris-grid/src/IrisGridTheme.test.ts#L7-L10) (DHC repo)
 
 ## Spies
 
+- Used to spy on methods (also props)
+- Can just spy, or mock the implementation
+
+### Examples
+
+- [03-spies.test.ts](examples/src/03-spies.test.ts)
+
 ## Setup / Teardown
+
+General Guidance
 
 - Start each test with clean slate (beforeEach)
 - Assert that each test actually tests something (expect.hasAssertions())
 - Cleanup when you are done (afterAll)
 
-### Jest Utils
+### Lifecycle Functions
+
+- beforeAll
+- beforeEach
+- afterEach
+- afterAll
+
+### Cleanup Utils
 
 - [mockClear](https://jestjs.io/docs/mock-function-api#mockfnmockclear) - clear data from mocks being called
 - [mockReset](https://jestjs.io/docs/mock-function-api#mockfnmockreset) - mockClear + clear mock implementation

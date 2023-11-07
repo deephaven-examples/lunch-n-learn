@@ -4,10 +4,7 @@ import { dateDiff, getNow } from './code/dateUtils';
 
 const { asMock } = TestUtils;
 
-jest.mock('./code/dateUtils', () => ({
-  ...jest.requireActual('./code/dateUtils'),
-  getNow: jest.fn(),
-}));
+jest.mock('./code/dateUtils');
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -28,6 +25,7 @@ describe('getAge', () => {
     const actual = getAge(person1.id);
 
     expect(getNow).toHaveBeenCalled();
+    expect(actual).toBeDefined();
     expect(actual).toEqual(expectedAge);
   });
 });
