@@ -14,11 +14,12 @@
 ## Module mocks
 
 - requireActual
-- \_\_esModule
 - Auto vs manual
+- \_\_esModule
 
 ### Examples
 
+- [02-moduleMocks.test.ts](examples/src/02-moduleMocks.test.ts)
 - Single export on a module:
   [IrisGridTheme.test.ts](https://github.com/deephaven/web-client-ui/blob/61d1a537ac9df31e3fe3dad95107b065a12ebd3b/packages/iris-grid/src/IrisGridTheme.test.ts#L7-L10)
 

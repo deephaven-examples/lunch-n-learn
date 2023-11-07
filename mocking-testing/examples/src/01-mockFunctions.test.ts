@@ -1,52 +1,42 @@
-type PersonID = `person-${number}`;
-
-/**
- * Get the length of a person's name using a `getName` function.
- */
-function getNameLength(
-  person: PersonID,
-  getName: (person: PersonID) => string
-) {
-  return getName(person).length;
-}
+import { getNameLength } from './code/personUtils';
 
 beforeEach(() => {
   jest.clearAllMocks();
   expect.hasAssertions();
 });
 
-describe("getNameLength", () => {
-  const mockName = "John";
+describe('getNameLength', () => {
+  const mockName = 'John';
 
   const getNameAnonymous = jest.fn();
   getNameAnonymous.mockReturnValue(mockName);
 
-  const getNameNamed = jest.fn().mockName("getName");
+  const getNameNamed = jest.fn().mockName('getName');
   getNameNamed.mockReturnValue(mockName);
 
-  const getNameNamed2 = jest.fn().mockName("getName2");
+  const getNameNamed2 = jest.fn().mockName('getName2');
   getNameNamed2.mockImplementation(() => mockName);
 
   const getNameImplemented = jest.fn(() => mockName);
 
   it.each([
-    ["anonymous", getNameAnonymous],
-    ["named", getNameNamed],
-    ["named2", getNameNamed2],
-    ["implemented", getNameImplemented],
-  ])("should call getName: %s", (_label, getName) => {
-    const actual = getNameLength("person-1", getName);
+    ['anonymous', getNameAnonymous],
+    ['named', getNameNamed],
+    ['named2', getNameNamed2],
+    ['implemented', getNameImplemented],
+  ])('should call getName: %s', (_label, getName) => {
+    const actual = getNameLength('person-1', getName);
 
     expect(getName).toHaveBeenCalled();
     expect(actual).toEqual(mockName.length);
   });
 
   it.each([
-    ["anonymous", getNameAnonymous],
-    ["named", getNameNamed],
-    ["named2", getNameNamed2],
-    ["implemented", getNameImplemented],
-  ])("should call getName: %s", (_label, getName) => {
+    ['anonymous', getNameAnonymous],
+    ['named', getNameNamed],
+    ['named2', getNameNamed2],
+    ['implemented', getNameImplemented],
+  ])('should call getName: %s', (_label, getName) => {
     expect(getName).not.toHaveBeenCalled();
   });
 });
