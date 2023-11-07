@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Jest Tests",
+      "cwd": "${workspaceRoot}/examples",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "node_modules/.bin/jest",
+        "--config",
+        "jest.config.cjs",
+        "--runInBand",
+        "--watch",
+        "${input:pickFile}"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "pickFile",
+      "type": "promptString",
+      "description": "Test pattern or filename"
+    }
+  ]
+}

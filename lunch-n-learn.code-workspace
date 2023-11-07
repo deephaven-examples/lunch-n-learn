@@ -1,0 +1,26 @@
+{
+  "folders": [
+    {
+      "path": "copilot"
+    },
+    {
+      "path": "devtools"
+    },
+    {
+      "path": "mocking-testing"
+    },
+    {
+      "path": "playwright"
+    },
+    {
+      "path": "storybook"
+    },
+    {
+      "path": "testing-library-react"
+    },
+    {
+      "path": "typescript"
+    }
+  ],
+  "settings": {}
+}
