@@ -26,4 +26,17 @@ describe('spy example', () => {
     jest.restoreAllMocks();
     expect(PersonRepo.getPersonById('person-1')).toBeDefined();
   });
+
+  it('should spy on getter / setters', () => {
+    const getSpy = jest.spyOn(PersonRepo, 'id', 'get');
+    const setSpy = jest.spyOn(PersonRepo, 'id', 'set');
+
+    const givenId = 999;
+
+    PersonRepo.id = givenId;
+    expect(PersonRepo.id).toEqual(givenId);
+
+    expect(getSpy).toHaveBeenCalled();
+    expect(setSpy).toHaveBeenCalledWith(givenId);
+  });
 });

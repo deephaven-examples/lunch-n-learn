@@ -40,3 +40,22 @@ describe('getNameLength', () => {
     expect(getName).not.toHaveBeenCalled();
   });
 });
+
+describe('mock constructor', () => {
+  const Person = jest.fn().mockName('Person');
+
+  it('should track instances', () => {
+    const person1 = new Person('person1');
+    const person2 = new Person('person2');
+
+    expect(Person).toHaveBeenCalledTimes(2);
+    expect(Person).toHaveBeenCalledWith('person1');
+    expect(Person).toHaveBeenCalledWith('person2');
+
+    expect(Person.mock.instances[0]).toBe(person1);
+    expect(Person.mock.instances[1]).toBe(person2);
+
+    expect(Person.mock.calls[0]).toEqual(['person1']);
+    expect(Person.mock.calls[1]).toEqual(['person2']);
+  });
+});

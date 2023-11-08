@@ -20,6 +20,15 @@ const cache = new Map<PersonID, Person>([
 ]);
 
 export class PersonRepo {
+  static _is: number;
+
+  static get id(): number {
+    return PersonRepo._is;
+  }
+  static set id(value: number) {
+    PersonRepo._is = value;
+  }
+
   static getPersonById(personId: PersonID): Person | undefined {
     return cache.get(personId);
   }
