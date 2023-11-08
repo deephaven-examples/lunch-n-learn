@@ -20,13 +20,13 @@ const cache = new Map<PersonID, Person>([
 ]);
 
 export class PersonRepo {
-  static _is: number;
+  static _id: number;
 
   static get id(): number {
-    return PersonRepo._is;
+    return PersonRepo._id;
   }
   static set id(value: number) {
-    PersonRepo._is = value;
+    PersonRepo._id = value;
   }
 
   static getPersonById(personId: PersonID): Person | undefined {
