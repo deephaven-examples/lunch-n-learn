@@ -2,7 +2,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug Jest Tests",
+      "name": "Mocking Examples - Debug",
       "cwd": "${workspaceRoot}/examples",
       "type": "node",
       "request": "launch",

@@ -6,6 +6,12 @@
 
 > Mocking is a process used in unit testing when the unit being tested has external dependencies. The purpose of mocking is to isolate and focus on the code being tested and not on the behavior or state of external dependencies. - [telerik.com](https://www.telerik.com/products/mocking/unit-testing.aspx#:~:text=Mocking%20is%20a%20process%20used,or%20state%20of%20external%20dependencies.)
 
+## Running Examples
+
+- Open workspace (`lunch-n-learn.code-workspace`) in vscode
+- Hit f5 to run "Mocking Examples - Debug" launch config
+- Type in test name or just hit enter. Terminal should show jest running in watch mode with options
+
 ## Function Mocks
 
 ### Purpose
@@ -144,7 +150,7 @@ Jest allows [mocking of timer apis](https://jestjs.io/docs/timer-mocks) (setTime
 - resolver - maps module paths via code
 - [Babel plugins](https://github.com/deephaven/web-client-ui/blob/d5b3b485dfc95248bdd1d664152c6c1ab288720a/jest.config.base.cjs#L9) - `babel-jest` support Babel plugins. We use a custom plugin for transforming css imports
 
-## Debugging
+## Debugging Config
 
 - Add a launch config to `.vscode/launch.json` for attaching to `node` processes.
 
