@@ -31,9 +31,7 @@ Historically, for variables we've used scss. With the adoption of spectrum we ar
 As we adopt spectrum, I expect the amount of custom css one has to write to continually go down. For example, the whole ACL editor has very little custom css. (14 styles, and I bet we could actually reduce that by half or more, as some could be props on spectrum components).
 
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 
 
 ## Defining CSS variables
@@ -138,7 +136,7 @@ Consider this example of a button component with css variables and variants:
 
 ## Inheritance
 
-CSS variables can be defined either in the root scope, or in a selector. We **use the root scope for global thene variables**, and in **the selector for component specific variables**. Inheritance works as expected, so if a component doesn't define a variable, it will inherit the value from the root scope. Use fallbacks pattern, in the case of something you are considering a semi-private API, and prefix with `--dh` to avoid conflicts (global).
+CSS variables can be defined either in the root scope, or in a selector. We **use the root scope for global theme variables**, and in **the selector for component specific variables**. Inheritance works as expected, so if a component doesn't define a variable, it will inherit the value from the root scope. Use fallbacks pattern, in the case of something you are considering a semi-private API, and prefix with `--dh` to avoid conflicts (global).
 
 ```scss
 // global theme
@@ -208,9 +206,7 @@ div {
 
 
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 
 ## Start using css variables!
 
@@ -234,9 +230,7 @@ We have a theme component which manages which theme is applied. All users create
 Please review the /styleguide for a complete list of exposed variables.
 
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 
 ### Stop using SCSS color variables!
 
@@ -272,9 +266,7 @@ A. Themes don't just flop the color palettes 100-900 -> 900-100, they also re-de
 ![](./background-stack.png)
 
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 
 
 ### Theme Files
@@ -352,9 +344,7 @@ components/src/theme/theme-dark
     // --dh-color-chart-* variables
 ```
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 
 ## Palette Variables
 
@@ -368,9 +358,7 @@ Light:
 Dark:
 ![](./dark-palette.jpg)
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
 
 ## Semantic Variables
 
@@ -410,10 +398,6 @@ These are variables you will probably use most often, especially:
 ![Semantic Variables](./semantic-variables.jpg)
 
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-
 ## Component Specific Color Variables
 
 Things like input states, or action button states, or item-list hover/focus states. Use these if you are creating custom compoents, like a new type of input or picker component.
@@ -430,9 +414,6 @@ Variables can and will be added here for things that we think should be promoted
 --dh-color-item-list-* // used for custom item list components
 ```
 
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
 ## Example
 
@@ -447,7 +428,7 @@ For example, let's say you made a new color picker selector:
     height: 16px;
     width: 16px;
     background-color: var(--active-color);
-    border: 1px solid var(--dh-color-input-border); // re-use the semetic variable
+    border: 1px solid var(--dh-color-input-border); // re-use the semantic variable
     border-radius: $border-radius; // non-colors variables are scss variables for now
 
     &:hover {
