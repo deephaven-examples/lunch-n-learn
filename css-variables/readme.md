@@ -24,11 +24,11 @@ $local-variable: $global-variable;
 }
 ```
 
-This is a good approach because it makes it easy to find the css for a component, and it makes it easy to see what css is being used by a component. And by scoping the css to the component, we avoid conflicts between components. We will continue to use this approach.
+This is a good approach because it makes it easy to find the CSS for a component, and it makes it easy to see what CSS is being used by a component. And by scoping the CSS to the component, we avoid conflicts between components. We will continue to use this approach.
 
-Historically, for variables we've used scss. With the adoption of spectrum we are switching to using css variables for our variables. CSS variables are great because they can be swapped out at runtime, which is necessary for themeing. They can be used almost anywhere you would have used a variable in scss.
+Historically, for variables we've used SCSS. With the adoption of spectrum we are switching to using CSS variables for our variables. CSS variables are great because they can be swapped out at runtime, which is necessary for theming. They can be used almost anywhere you would have used a variable in SCSS.
 
-As we adopt spectrum, I expect the amount of custom css one has to write to continually go down. For example, the whole ACL editor has very little custom css. (14 styles, and I bet we could actually reduce that by half or more, as some could be props on spectrum components).
+As we adopt spectrum, I expect the amount of custom CSS one has to write to continually go down. For example, the whole ACL editor has very little custom CSS. (14 styles, and I bet we could actually reduce that by half or more, as some could be props on spectrum components).
 
 
 
@@ -41,7 +41,7 @@ They are defined with a `--` prefix, and used with `var(--variable-name)`. See: 
 ```scss
 $color: red;
 // vs
-<some scope> { // :root is the global scope, or a css selector
+<some scope> { // :root is the global scope, or a CSS selector
 --color: red;
 }
 
@@ -72,7 +72,7 @@ $color: red;
 Fallback values to expose variables:
 
 ```scss
-// spectrum uses this pattern for themeing, where the component defines a variable and a fallback value
+// spectrum uses this pattern for theming, where the component defines a variable and a fallback value
 // and the user can override it by setting the undefined variable in a theme
 .my-spectrum-component {
   // exposes --my-spectrum-component-color as a themeable variable, but defaults to a fallback value
@@ -105,7 +105,7 @@ vs.
 
 ```
 
-Consider this example of a button component with css variables and variants:
+Consider this example of a button component with CSS variables and variants:
 
 ```scss
 // Button.scss
@@ -169,7 +169,7 @@ CSS variables can be defined either in the root scope, or in a selector. We **us
 
 ## Variables in JS
 
-A challenge with that is, monaco, ploly and our grid all require resolved javascript values for theming. We accomplish this by using JS to read the value of each css variable defined in our theme (for numbers, it getProperty, and colors by setting a background and reading the color back from the element).
+A challenge with using inheritance is that monaco, plotly and our grid all require resolved javascript values for theming. We accomplish this by using JS to read the value of each CSS variable defined in our theme (for numbers, it getProperty, and colors by setting a background and reading the color back from the element).
 
 ```js
 :root {
@@ -208,15 +208,15 @@ div {
 
 
 
-## Start using css variables!
+## Start using CSS variables!
 
-We have a theme component which manages which theme is applied. All users created themes must inheriet from either a light or a dark theme.
+We have a theme component which manages which theme is applied. All users created themes must inherit from either a light or a dark theme.
 
-1. All Deephaven **theme variables** start with `--dh` to avoid conflicts with other css variables. `--dh` variables should be thought of as a public API. Removing a `--dh` variable is a breaking change. Adding a variable is not a breaking change, as users themes inherit from the base themes, and will not break if a variable is added.
+1. All Deephaven **theme variables** start with `--dh` to avoid conflicts with other CSS variables. `--dh` variables should be thought of as a public API. Removing a `--dh` variable is a breaking change. Adding a variable is not a breaking change, as users themes inherit from the base themes, and will not break if a variable is added.
  
    Local variables to components should not start with `--dh`, but instead should follow the component name `--my-component`.
 
-2. A theme consists of a set of css variables defined across a number of files. Variables added to Dark or Light theme **must be added to both base theme files**. You will rarely need to add a variable to a theme file unless we think it should be part of the public api.
+2. A theme consists of a set of CSS variables defined across a number of files. Variables added to Dark or Light theme **must be added to both base theme files**. You will rarely need to add a variable to a theme file unless we think it should be part of the public API.
 
 3. Components should use the most specific available variable. If a **semantic _component_ variable** is available use that, otherwise it should use a **semantic variable** and lastly it should use a **palette variable**.
 
@@ -234,17 +234,17 @@ Please review the /styleguide for a complete list of exposed variables.
 
 ### Stop using SCSS color variables!
 
-Immediately discontinue use of scss color variables in favor of css variables.
+Immediately discontinue use of SCSS color variables in favor of CSS variables.
 
 - scss unit variables like $spacer-*, or $border-radius are still ok to use (for now).
-- All bootstrap variables have been re-defined to use the css variables, but we haven't removed the scss variables yet. They should be considered deprecated.
+- All bootstrap variables have been re-defined to use the CSS variables, but we haven't removed the scss variables yet. They should be considered deprecated.
   ex. 
   ```scss
   $content-bg: var(--dh-color-content-bg);
   $primary: var(--dh-color-accent);
   ```
-- Immediately **stop using compile time color manipulation functions in scss**. This is no longer possible darken($primary, 10%) does not work against a runtime variable. However, good news is with the expanded palette, this is no longer necessary. For ex. Accent 100-1400 covers a much wider range of colors than we had before. All existing scss color manipulations were removed and replaced as part of themeing work.
-- Transparency is a special case. Since user supplied variables can be in any sRGB formart we must also stop using scss functions for transparency. Instead of `rgba($color, 0.5)` use either a color-mix function:
+- Immediately **stop using compile time color manipulation functions in scss**. This is no longer possible darken($primary, 10%) does not work against a runtime variable. However, good news is with the expanded palette, this is no longer necessary. For ex. Accent 100-1400 covers a much wider range of colors than we had before. All existing SCSS color manipulations were removed and replaced as part of theming work.
+- Transparency is a special case. Since user supplied variables can be in any sRGB format we must also stop using SCSS functions for transparency. Instead of `rgba($color, 0.5)` use either a color-mix function:
   ```scss
   // mix accent and bg
   color: color-mix(in srgb, var(--dh-color-accent) 55%, var(--dh-color-bg));
@@ -350,7 +350,7 @@ components/src/theme/theme-dark
 
 For reference only, do not use directly. 
 
-Light and dark invert there range of colors from 50-900. ie. 900 is black in light theme and white in dark theme.
+Light and dark invert their range of colors from 50-900. ie. 900 is black in light theme and white in dark theme.
 
 Light:
 ![](./light-palette.jpg)
@@ -429,7 +429,7 @@ For example, let's say you made a new color picker selector:
     width: 16px;
     background-color: var(--active-color);
     border: 1px solid var(--dh-color-input-border); // re-use the semantic variable
-    border-radius: $border-radius; // non-colors variables are scss variables for now
+    border-radius: $border-radius; // non-colors variables are SCSS variables for now
 
     &:hover {
         border-color: var(--dh-color-input-hover-border);
