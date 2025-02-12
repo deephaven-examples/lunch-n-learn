@@ -208,15 +208,33 @@ A component can have it's own state and parameters to control how it is displaye
 
 ```python
 @ui.component
-def foo():
-    return ui.heading("Hello, world!")
+def table_of_contents():
+    return ui.flex(
+        ui.heading("My first component"),
+        ui.text("- Components; UI Building Blocks"),
+        ui.text("- Defining a component"),
+        ui.text("- Using a component"),
+        direction="column",
+    )
 
-f = foo()
+
+my_table_of_contents = table_of_contents()
 ```
 
 - The `@ui.component` decorator is used to define a component. What the function _returns_ is what is displayed.
 - This will create a component that displays "Hello, world!" when it is rendered.
 - The `foo` function is only executed when the component is rendered (opened by the user), not when it is called and assigned to a variable.
+
+You can then re-use these components in other components:
+
+```python
+@ui.component
+def multiple_contents():
+    return ui.flex(table_of_contents(), table_of_contents(), table_of_contents())
+
+
+my_multiple_contents = multiple_contents()
+```
 
 This gets interesting when you add state to a component. Let's create a counter component
 
