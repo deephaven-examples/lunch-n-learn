@@ -1,6 +1,6 @@
 # deephaven.ui Lunch 'n' Learn
 
-This guided session is designed to give an overview of what deephaven.ui is, how it works, and some ideas for how you can use it. This is a different than the [crash course tutorial](https://github.com/deephaven/deephaven-plugins/blob/main/plugins/ui/docs/tutorial.md) which is designed to be self-guided, whereas this session will be more interactive, working through examples together and answering questions.
+This guided session is designed to give an overview of what deephaven.ui is, how it works, and some ideas for how you can use it. This is a different than the [crash course tutorial](https://salmon.deephaven.io/core/ui/docs/tutorial/) which is designed to be self-guided, whereas this session will be more interactive, working through examples together and answering questions.
 
 The code samples are expected to be run in order, and may use variables from previous code samples.
 
@@ -35,7 +35,13 @@ from deephaven import ui
 - Emphasize information: heading, inline_alert, illustrated_message
 - Provide guidance: markdown, contextual_help
 
-Example to display large text:
+Example displaying simple text:
+
+```python
+x = ui.text("Hello, world!")
+```
+
+Example to display large text, using a `heading` instead of `text`:
 
 ```python
 x = ui.heading("Hello, world!")
@@ -48,6 +54,8 @@ Wrap stuff with `ui.view` and give it some colour:
 ```python
 x = ui.view(ui.heading("Hello, world!"), background_color="positive")
 ```
+
+**Note**: With colours, we encourage use of semantic names for colours, e.g. using "positive" instead of "green". This will ensure that the colour is themed correctly for the user's environment.
 
 You can also use `ui.flex` to lay out multiple components vertically in a _column_:
 
@@ -111,7 +119,7 @@ table_plot = ui.flex(
 )
 ```
 
-There are other layout components like [`ui.tabs`](https://github.com/deephaven/deephaven-plugins/blob/main/plugins/ui/docs/components/tabs.md) and [`ui.divider`](https://github.com/deephaven/deephaven-plugins/blob/main/plugins/ui/docs/components/divider.md) can be used to further organize your layout.
+There are other layout components like [`ui.tabs`](https://salmon.deephaven.io/core/ui/docs/components/tabs/) and [`ui.divider`](https://salmon.deephaven.io/core/ui/docs/components/divider/) can be used to further organize your layout.
 
 ### Layout a dashboard
 
@@ -146,6 +154,8 @@ d = ui.dashboard(
 ```
 
 You can of use any component within the panels.
+
+**Note:** When you declare a `ui.dashboard` at the top level of a Persistent Query on Enterprise, it will appear in the dashboard list of all users with permissions to view that query.
 
 ### Input from users
 
@@ -226,7 +236,7 @@ example_counter = counter()
 ![Example counter component](./assets/example-counter.png)
 
 - We declare a state variable with `ui.use_state`, with an initial value of `0`.
-  - All functions with `use_` are special functions known as [_hooks_](https://github.com/deephaven/deephaven-plugins/blob/main/plugins/ui/docs/hooks/overview.md). They are used to interact with the UI framework, and have special handling.
+  - All functions with `use_` are special functions known as [_hooks_](https://salmon.deephaven.io/core/ui/docs/hooks/overview/). They are used to interact with the UI framework, and have special handling.
   - Tuple unpacking is used to get the current value and a function to update it.
 - We define a function `handle_press` that increments the number.
 - We're returning a heading with the value of `number` in it, and a button that calls `handle_press` to increment the number when pressed.
@@ -370,7 +380,7 @@ ft = filter_table()
 
 ![Display a filterable table with a picker](./assets/filter-table-picker-example.png)
 
-By passing the distinct values of the `Sym` column to the `picker`, the `picker` component will use those as options that can be selected from the dropdown. That's nice, but it's annoying that we start without a value selected. We can default it to the first value in the table by using a [`use_cell_data`](https://github.com/deephaven/deephaven-plugins/blob/main/plugins/ui/docs/hooks/use_cell_data.md) hook:
+By passing the distinct values of the `Sym` column to the `picker`, the `picker` component will use those as options that can be selected from the dropdown. That's nice, but it's annoying that we start without a value selected. We can default it to the first value in the table by using a [`use_cell_data`](https://salmon.deephaven.io/core/ui/docs/hooks/use_cell_data) hook:
 
 ```python
 @ui.component
@@ -417,9 +427,288 @@ smoker_tips = filter_table(tips, "Smoker")
 
 We've created an interactive, re-usable component.
 
+### Optimizing components
+
+When ever state changes, your component will execute again, re-rendering. This can be expensive if you're doing a lot of work in your component. Consider the following, where we're creating a `time_table` within the render function based on input from the user:
+
+```python
+from deephaven import time_table, ui
+
+
+@ui.component
+def ui_time_table_n():
+    n, set_n = ui.use_state(1)
+
+    return ui.flex(
+        ui.slider(value=n, min_value=1, max_value=999, on_change=set_n, label="n"),
+        time_table("PT1s").update(f"x=i*{n}").reverse(),
+        direction="column",
+    )
+
+
+time_table_n = ui_time_table_n()
+```
+
+When you modify the slider, it will re-run the function, calling the `time_table` function again and restarting the table. That's fine if that's our only state, but what if we want to add another state variable? Let's add a `theme` state variable:
+
+```python
+theme_options = ["accent-200", "red-200", "green-200"]
+
+
+@ui.component
+def ui_time_table_n():
+    n, set_n = ui.use_state(1)
+    theme, set_theme = ui.use_state(theme_options[0])
+
+    return ui.view(
+        ui.flex(
+            ui.flex(
+                ui.picker(
+                    *theme_options,
+                    label="Theme",
+                    selected_key=theme,
+                    on_change=set_theme,
+                ),
+                ui.slider(
+                    value=n, min_value=1, max_value=999, on_change=set_n, label="n"
+                ),
+                flex_grow=0,
+            ),
+            # ❌ This table will be re-created on every render
+            time_table("PT1s").update(f"x=i*{n}").reverse(),
+            direction="column",
+            height="100%",
+        ),
+        background_color=theme,
+        align_self="stretch",
+        flex_grow=1,
+    )
+
+
+time_table_n = ui_time_table_n()
+```
+
+Now you'll see that the `time_table` is being recreated each time you change the theme, even though the theme should not actually affect the table.
+
+You can use the [`use_memo`](https://salmon.deephaven.io/core/ui/docs/hooks/use_memo) hook to memoize the result of a function, so that it only re-runs when the inputs change. Let's change the above component so the table is only updated when `n` changes:
+
+```python
+theme_options = ["accent-200", "red-200", "green-200"]
+
+
+@ui.component
+def ui_time_table_n():
+    n, set_n = ui.use_state(1)
+    theme, set_theme = ui.use_state(theme_options[0])
+
+    # ✅ Memoize the table operation, only recompute when the dependency `n` changes
+    result_table = ui.use_memo(
+        lambda: time_table("PT1s").update(f"x=i*{n}").reverse(), [n]
+    )
+
+    return ui.view(
+        ui.flex(
+            ui.flex(
+                ui.picker(
+                    *theme_options,
+                    label="Theme",
+                    selected_key=theme,
+                    on_change=set_theme,
+                ),
+                ui.slider(
+                    value=n, min_value=1, max_value=999, on_change=set_n, label="n"
+                ),
+                flex_grow=0,
+            ),
+            result_table,
+            direction="column",
+            height="100%",
+        ),
+        background_color=theme,
+        align_self="stretch",
+        flex_grow=1,
+    )
+
+
+time_table_n = ui_time_table_n()
+```
+
+`use_memo` can be used with any expensive calculation. For example, you could use it to memoize a plot as well:
+
+```python
+theme_options = ["accent-200", "red-200", "green-200"]
+
+
+@ui.component
+def ui_time_table_n():
+    n, set_n = ui.use_state(1)
+    p, set_p = ui.use_state(1)
+    theme, set_theme = ui.use_state(theme_options[0])
+
+    # ✅ Memoize the table operation, only recompute when the dependency `n` or `p` changes
+    result_table = ui.use_memo(
+        lambda: time_table("PT1s").update([f"x=i*{n}", f"y=Math.pow(x, {p})"]), [n, p]
+    )
+
+    # ✅ Memoize the plot operation, only recompute when the dependency `result_table` changes
+    result_plot = ui.use_memo(
+        lambda: dx.line(result_table, x="x", y="y", title="y=x^p"), [result_table]
+    )
+
+    return ui.view(
+        ui.flex(
+            ui.flex(
+                ui.picker(
+                    *theme_options,
+                    label="Theme",
+                    selected_key=theme,
+                    on_change=set_theme,
+                ),
+                ui.slider(
+                    value=n, min_value=1, max_value=999, on_change=set_n, label="n"
+                ),
+                ui.slider(
+                    value=p, min_value=1, max_value=5, on_change=set_p, label="p"
+                ),
+                flex_grow=0,
+            ),
+            ui.flex(result_table, result_plot),
+            direction="column",
+            height="100%",
+        ),
+        background_color=theme,
+        align_self="stretch",
+        flex_grow=1,
+    )
+
+
+time_table_n = ui_time_table_n()
+```
+
+Use memoization to ensure you're not re-computing things unnecessarily when state changes and the component is re-rendered.
+
+### Working with tables
+
+You can wrap a table with [`ui.table`](https://salmon.deephaven.io/core/ui/docs/components/table/) to handle interactions with a table, and/or add formatting or other settings.
+
+#### Table events
+
+```python
+t = ui.table(stocks, on_row_press=lambda data: print(f"Row Press: {data}"))
+```
+
+See [`ui.table` events documentation](https://salmon.deephaven.io/core/ui/docs/components/table/#events) for the full list of events.
+
+#### Table formatting
+
+```python
+t = ui.table(
+    stocks,
+    format_=[
+        ui.TableFormat(
+            cols=["Sym", "Exchange"], if_="Sym = `DOG`", background_color="negative"
+        )
+    ],
+)
+```
+
+See [`ui.table` formatting documentation](https://salmon.deephaven.io/core/ui/docs/components/table/#formatting) for the full list of formatting options.
+
+### Prompting the user (dialogs)
+
+You can use a `dialog` to prompt the user:
+
+```python
+@ui.component
+def dialog_example():
+    is_open, set_open = ui.use_state(False)
+
+    def handle_confirm():
+        print("Confirmed")
+        set_open(False)
+
+    def handle_cancel():
+        print("Cancelled")
+        set_open(False)
+
+    return ui.dialog_trigger(
+        ui.action_button("Check connectivity", on_press=lambda: set_open(True)),
+        ui.dialog(
+            ui.heading("Internet Speed Test"),
+            ui.content("Start speed test?"),
+            ui.button_group(
+                ui.button("Confirm", variant="accent", on_press=handle_confirm),
+                ui.button("Cancel", variant="secondary", on_press=handle_cancel),
+            ),
+        ),
+        is_open=is_open,
+    )
+
+
+my_dialog_example = dialog_example()
+```
+
+You can also trigger a dialog from a table. For example, let's add a button to the `stocks` table that triggers a dialog when the user presses a row:
+
+```python
+@ui.component
+def dialog_example():
+    sym, set_sym = ui.use_state('')
+    is_open, set_open = ui.use_state(False)
+
+    def handle_row_double_press(row_data):
+        set_sym(row_data['Sym']['value'])
+        set_open(True)
+
+    def handle_buy():
+        print(f"Bought {sym}")
+        set_open(False)
+
+    def handle_sell():
+        print(f"Sold {sym}")
+        set_open(False)
+
+    def handle_cancel():
+        print("Cancelled")
+        set_open(False)
+
+    return ui.dialog_trigger(
+        ui.table(stocks, on_row_double_press=handle_row_double_press),
+        ui.dialog(
+            ui.heading(f"{sym}"),
+            ui.content(f"Would you like to buy or sell {sym}?"),
+            ui.button_group(
+                ui.button("Buy", variant="accent", on_press=handle_buy),
+                ui.button("Sell", variant="negative", on_press=handle_sell),
+                ui.button("Cancel", variant="secondary", on_press=handle_cancel),
+            ),
+        ),
+        is_open=is_open,
+    )
+
+
+my_dialog_example = dialog_example()
+```
+
+![Prompt the user for input with a dialog](./assets/dialog-example.png)
+
+### Notifying the user (toasts)
+
+You can notify the user with a toast when an event occurs.
+
+```python
+toast_button = ui.button(
+    "Show toast",
+    on_press=lambda: ui.toast("Toast is done!"),
+    variant="primary",
+)
+```
+
+![Toast example](./assets/toast-example.png)
+
 ### Put it together
 
-We've been limiting out components so far to just within a panel. Now let's make a dashboard that has some interactivity. Return a dashboard layout element like `ui.column` to make an interactive dashboard:
+We've been limiting our components so far to just within a panel. Now let's make a dashboard that has some interactivity. Return a dashboard layout element like `ui.column` to make an interactive dashboard:
 
 ```python
 @ui.component
@@ -518,3 +807,416 @@ d = ui.dashboard(
 ```
 
 ![Dashboard with a stack for exchanges](./assets/dashboard-with-stack.png)
+
+### Build some cool dashboards
+
+We recommend stepping through and building your own dashboard by following along [the tutorial](https://salmon.deephaven.io/core/ui/docs/tutorial/).
+
+```python
+from deephaven import ui
+import deephaven.plot.express as dx
+from deephaven import agg
+
+iris = dx.data.iris()
+
+ui_iris = ui.table(
+    iris,
+    reverse=True,
+    front_columns=["Timestamp", "Species"],
+    hidden_columns=["PetalLength", "PetalWidth", "SpeciesID"],
+    density="compact",
+)
+
+scatter_by_species = dx.scatter(iris, x="SepalLength", y="SepalWidth", by="Species")
+
+sepal_text = ui.text("SepalLength vs. SepalWidth By Species Panel")
+
+sepal_flex = ui.flex(ui_iris, scatter_by_species)
+
+sepal_flex_column = ui.flex(sepal_text, sepal_flex, direction="column")
+
+sepal_length_hist = dx.histogram(iris, x="SepalLength", by="Species")
+sepal_width_hist = dx.histogram(iris, x="SepalWidth", by="Species")
+
+sepal_tabs = ui.tabs(
+    ui.tab(sepal_flex, title="Sepal Length vs. Sepal Width"),
+    ui.tab(sepal_length_hist, title="Sepal Length Histogram"),
+    ui.tab(sepal_width_hist, title="Sepal Width Histogram"),
+)
+sepal_flex_tabs = ui.flex(sepal_text, sepal_tabs, direction="column")
+
+about_markdown = ui.markdown(r"""
+### Iris Dashboard
+
+Explore the Iris dataset with **deephaven.ui**
+
+- The data powering this dashboard is simulated Iris data
+- Charts are from Deephaven Plotly Express
+- Other components are from **deephaven.ui**
+  """)
+
+sepal_panel = ui.panel(sepal_flex_tabs, title="Sepal Panel")
+about_panel = ui.panel(about_markdown, title="About")
+
+iris_avg = iris.agg_by([agg.avg(cols=["SepalLength", "SepalWidth", "PetalLength", "PetalWidth"])], by=["Species"])
+iris_max = iris.agg_by([agg.max_(cols=["SepalLength", "SepalWidth", "PetalLength", "PetalWidth"])], by=["Species"])
+iris_min = iris.agg_by([agg.min_(cols=["SepalLength", "SepalWidth", "PetalLength", "PetalWidth"])], by=["Species"])
+
+ui_iris_avg = ui.panel(iris_avg, title="Average")
+ui_iris_max = ui.panel(iris_max, title="Max")
+ui_iris_min = ui.panel(iris_min, title="Min")
+
+iris_agg_stack = ui.stack(ui_iris_avg, ui_iris_max, ui_iris_min)
+
+species_table = iris.view("Species").select_distinct()
+
+def create_sepal_panel(set_species):
+  ui_iris = ui.table(
+      iris,
+      reverse=True,
+      front_columns=["Timestamp", "Species"],
+      hidden_columns=["PetalLength", "PetalWidth", "SpeciesID"],
+      density="compact",
+      on_row_double_press=lambda event: set_species(event["Species"]["value"])
+    )
+
+  sepal_flex = ui.flex(ui_iris, scatter_by_species)
+
+  sepal_tabs = ui.tabs(
+      ui.tab(sepal_flex, title="Sepal Length vs. Sepal Width"),
+      ui.tab(sepal_length_hist, title="Sepal Length Histogram"),
+      ui.tab(sepal_width_hist, title="Sepal Width Histogram"),
+  )
+
+  sepal_flex_tabs = ui.flex(sepal_text, sepal_tabs, direction="column")
+
+  return ui.panel(sepal_flex_tabs, title="Sepal Panel")
+
+@ui.component
+def summary_badges(species):
+  # Filter the tables to the selected species
+  species_min = iris_min.where("Species=species")
+  species_max = iris_max.where("Species=species")
+  species_avg = iris_avg.where("Species=species")
+
+  # Pull the desired columns from the tables before using the hooks
+  sepal_length_min = ui.use_cell_data(species_min.view(["SepalLength"]))
+  sepal_width_min = ui.use_cell_data(species_min.view(["SepalWidth"]))
+  sepal_length_max = ui.use_cell_data(species_max.view(["SepalLength"]))
+  sepal_width_max = ui.use_cell_data(species_max.view(["SepalWidth"]))
+  sepal_length_avg = ui.use_cell_data(species_avg.view(["SepalLength"]))
+  sepal_width_avg = ui.use_cell_data(species_avg.view(["SepalWidth"]))
+
+  # format the values to 3 decimal places
+  # set flex_grow to 0 to prevent the badges from growing
+  return ui.flex(
+    ui.badge(f"SepalLength Min: {sepal_length_min:.3f}", variant="info"),
+    ui.badge(f"SepalLength Max: {sepal_length_max:.3f}", variant="info"),
+    ui.badge(f"SepalLength Avg: {sepal_length_avg:.3f}", variant="info"),
+    ui.badge(f"SepalWidth Min: {sepal_width_min:.3f}", variant="info"),
+    ui.badge(f"SepalWidth Max: {sepal_width_max:.3f}", variant="info"),
+    ui.badge(f"SepalWidth Avg: {sepal_width_avg:.3f}", variant="info"),
+    flex_grow=0
+  )
+
+def create_heatmap(species):
+    heatmap = ui.illustrated_message(
+        ui.icon("vsFilter"),
+        ui.heading("Species required"),
+        ui.content("Select a species to display filtered table and chart."),
+        width="100%",
+    )
+
+    if species:
+        filtered_table = iris.where("Species = species")
+        heatmap = dx.density_heatmap(filtered_table, x="SepalLength", y="SepalWidth")
+
+    return heatmap
+
+@ui.component
+def create_species_dashboard():
+    species, set_species = ui.use_state()
+    species_picker = ui.picker(
+        species_table,
+        on_change=set_species,
+        selected_key=species,
+        label="Current Species",
+    )
+
+    heatmap = ui.use_memo(lambda: create_heatmap(species), [species])
+
+    badges = summary_badges(species) if species else None
+
+    species_panel = ui.panel(
+        ui.flex(species_picker, badges, heatmap, direction="column"),
+        title="Investigate Species",
+    )
+
+    sepal_panel = create_sepal_panel(set_species)
+
+    return ui.column(
+        ui.row(about_panel, iris_agg_stack, height=1),
+        ui.row(sepal_panel, species_panel, height=2),
+    )
+
+iris_species_dashboard_final = ui.dashboard(create_species_dashboard())
+```
+
+### Enterprise specific
+
+This section covers some behaviour that is specific to Enterprise.
+
+#### User context
+
+As mentioned previously deephaven.ui components are only executed when the component is rendered. This means that if you want to access the user context (e.g. the current user's username), you can do so within a component. Using `get_effective_user()` you can get the effective user. Using this, we can show the current user's username in a panel, which may be different than who created the query:
+
+```python
+from deephaven_enterprise.auth_context import get_effective_user
+
+query_user = get_effective_user()
+
+@ui.component
+def ui_user_panel():
+    user = get_effective_user()
+
+    return ui.panel(
+      ui.text(f"Query created by: {query_user}"),
+      ui.text(f"Current user: {user}")
+    )
+
+user_panel = ui_user_panel()
+```
+
+Using the user context, you can do some interesting things. For example, perhaps we want a table to keep track of user interactions with a specific component (e.g. an audit log). We can use the user context to track what rows a user has clicked on within a table:
+
+```python
+from deephaven.stream.table_publisher import table_publisher, TablePublisher
+from deephaven.stream import blink_to_append_only
+from deephaven import empty_table, dtypes as dht, ui
+
+
+# Create the audit log table, using a table publisher
+audit_pub_table, audit_publisher = table_publisher(
+    name="Audit log",
+    col_defs={
+        "Timestamp": dht.Instant,
+        "User": dht.string,
+        "Value": dht.string,
+    },
+)
+audit_log = blink_to_append_only(audit_pub_table)
+
+@ui.component
+def auditable_table(source):
+    def handle_row_press(row_data):
+        audit_publisher.add(
+          empty_table(1).update([
+            "Timestamp=java.time.Instant.now()",
+            f"User={get_effective_user()}",
+            f"Value=Row press: {row_data['Sym']['value']}",
+          ])
+        )
+
+    return ui.table(source, on_row_press=handle_row_press)
+
+auditable = auditable_table(stocks)
+```
+
+#### Dashboard sharing
+
+When you declare a dashboard in a Persistent Query, it will be visible to all users who have access to that query and will appear in their dashboards list. This is a great way to share dashboards with other users.
+
+### Integrating with other systems/packages
+
+deephaven.ui enables you to build interfaces to interact with other systems/packages which may not be wired up through the JS API, enabling interesting use cases. Let's go over a couple of examples to spark curiosity.
+
+#### Pivot table builder
+
+[Pivot builder example](https://gist.github.com/dgodinez-dh/9765c4a3de19b224d1e9bd77efca65b7). This example uses a custom function that builds a pivot table. You can use this to build a pivot table in Python and display it in the UI.
+
+#### QR Code generation
+
+You can use the `qrcode` package to generate QR codes in Python, and display them in a `deephaven.ui` component. Here's an example that generates the QR code, converts it to a base64 encoded image, and then displays it on the client using `ui.image` (requires the `qrcode` package to be installed):
+
+```python
+# Create and display a QR Code in Deephaven
+from deephaven import ui
+from io import BytesIO
+import base64
+import qrcode
+
+
+def make_qrcode_img_str(text: str):
+    img = qrcode.make(text)
+    buff = BytesIO()
+    img.save(buff, format="png")
+    img_str = base64.b64encode(buff.getvalue())
+    img_b64 = bytes("data:image/png;base64,", encoding="utf-8") + img_str
+    return img_b64.decode('utf-8')
+
+
+@ui.component
+def ui_qrcode(text: str):
+    img_str = ui.use_memo(lambda: make_qrcode_img_str(text), [text])
+    return ui.image(img_str)
+
+my_qr = ui_qrcode("https://salmon.deephaven.io/core/ui/docs")
+```
+
+We've now created a new component `ui_qrcode` that accepts a URL and displays a QR code for that URL. You can of course use this with other components. For example, let's create a QR code that can be scanned clicking a row in a table:
+
+```python
+stock_trades = db.historical_table("LearnDeephaven", "StockTrades").where(
+    ["Date=`2017-08-25`", "Exchange=`Nasdaq`"]
+)
+
+
+@ui.component
+def ui_table_qrcode():
+    url, set_url = ui.use_state("https://salmon.deephaven.io/core/ui/docs")
+
+    def handle_press(row_data):
+        sym = row_data["Sym"]["value"]
+        exchange = row_data["Exchange"]["value"]
+        set_url(f"https://www.google.com/finance/quote/{sym}:{exchange}")
+
+    return ui.flex(ui.table(stock_trades, on_row_press=handle_press), ui_qrcode(url))
+
+
+table_qrcode = ui_table_qrcode()
+```
+
+The QR code will update when you click on a row in the table, displaying a QR code for the URL generated from the row data. You can scan that URL from your phone to navigate to that page.
+
+#### Open AI chat
+
+Take a look at the AI Chat dashboard for an example of integrating with the `openai` package: https://dev-sanluis.int.illumon.com:8123/iriside/dashboard/3e7b72c6-b473-4ea8-ae2e-43f7e33ff4e9
+
+![AI chat example](./assets/ai-chat.png)
+
+### Pitfalls
+
+There are a few pitfalls to be aware of when working with `deephaven.ui` and Python in general.
+
+#### Input debouncing/form submission
+
+Because the Python code is executed server side, events need to be sent to the server to be processed. With things like text input, you may not have the value you expect if you're trying to use it immediately. For example, consider the following component:
+
+```python
+@ui.component
+def input_debounce():
+    value, set_value = ui.use_state("")
+
+    return [
+        ui.text_field(label="Foo", on_change=set_value),
+        ui.button("Submit", on_press=lambda e: print(f"Value is {value}")),
+    ]
+
+input_debounce_example = input_debounce()
+```
+
+If you type quickly in the text field and immediately click the "Submit" button, you may print a stale value of the text field. This is because the `on_change` event is debounced to prevent sending too many events to the server, and may not have been sent before the `on_submit` event is triggered from a click (which is _not_ debounced). Instead, ensure you are using the latest values by using a [`form`](https://salmon.deephaven.io/core/ui/docs/components/form/) and submitting the form:
+
+```python
+@ui.component
+def input_debounce():
+    value, set_value = ui.use_state("")
+
+    return ui.form(
+        ui.text_field(label="Foo", on_change=set_value, name="foo"),
+        ui.button("Submit", type="submit"),
+        on_submit=lambda e: print(f"Value is {e['foo']}"),
+    )
+
+input_debounce_example = input_debounce()
+```
+
+By wrapping in a `form`, putting a `name` on the input, and changing the button to `submit` the form, you'll get the latest value of the input when the form is submitted. You'll also have the benefit of the form behaving like a form, and submitting on enter. Whenever submitting a form of data, it's a good idea to use a form and submit the form, rather than relying on the `on_press` event of a button.
+
+**Note:** There is [some discussion](https://github.com/deephaven/deephaven-plugins/issues/894) about flushing out debounced input changes before presses are processed to avoid this pitfall, but that comes with some other possible complications and has not been implemented yet.
+
+#### Variable scoping
+
+Python does not create a new variable scope for `if` statements or `for` loops, which can be confusing if you're used to other languages. Consider the following if statement:
+
+```python
+if True:
+    baz = 3
+
+print(baz)
+```
+
+`baz` is still accessible outside of the scope. Consider again with a `for` loop:
+
+```python
+for foo in range(10):
+    bar = 2
+print(foo, bar)
+```
+
+This will print out `9 2`. The `foo` variable is still available after the loop, and the `bar` variable is available outside the loop. There are some [interesting discussions](https://mail.python.org/pipermail/python-ideas/2008-October/002109.html) in the Python community about this behaviour.
+
+This is also prevalent within [list comprehensions](https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions). Consider the following:
+
+```python
+fs = [lambda: print(i) for i in range(10)]
+```
+
+We've assigned a list of functions to `fs`, each of which will print out the value of `i`. However, when we call them, they will all print out `9`:
+
+```python
+for f in fs:
+    f()
+```
+
+This is because the `i` variable is still available after the loop, and all the functions are using the same `i` variable. To get around this, you can use a default argument:
+
+```python
+fs = [lambda i=i: print(i) for i in range(10)]
+```
+
+Now when you call them, they will print out the correct value of `i`.
+
+Why does this matter in `deephaven.ui`? Consider a component where we create a list of buttons, that when pressed, will increment our counter by that amount:
+
+```python
+@ui.component
+def my_buttons(vals):
+    count, set_count = ui.use_state(0)
+
+    return [
+        ui.heading(count),
+        *[
+            ui.action_button(f"+{v}", on_press=lambda e: set_count(count + v))
+            for v in vals
+        ],
+    ]
+
+
+b = my_buttons([1, 5, 10])
+```
+
+You'll see pressing any of these buttons will actually increment the value by `10`, because they're all using the same `v` variable, which is set to `10` after the for loop. You can fix this by using a default argument:
+
+```python
+@ui.component
+def my_buttons(vals):
+    count, set_count = ui.use_state(0)
+
+    return [
+        ui.heading(count),
+        *[
+            ui.action_button(
+                f"+{v}", on_press=lambda e, v=v: set_count(count + v)
+            )
+            for v in vals
+        ],
+    ]
+
+
+b = my_buttons([1, 5, 10])
+```
+
+## Conclusion
+
+deephaven.ui enables a ton of interesting use cases. See some of the examples that have been built on GitHub: https://gist.github.com/search?q=deephaven.ui
